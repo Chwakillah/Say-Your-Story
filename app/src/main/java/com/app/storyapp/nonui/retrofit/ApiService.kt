@@ -2,11 +2,16 @@ package com.app.storyapp.nonui.retrofit
 
 import com.app.storyapp.nonui.data.LoginResponse
 import com.app.storyapp.nonui.data.RegisterResponse
+import com.app.storyapp.nonui.data.StoryDetailResponse
+import com.app.storyapp.nonui.data.StoryResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ApiService {
 
@@ -24,4 +29,10 @@ interface ApiService {
         @Field("email") email: String,
         @Field("password") password: String
     ): LoginResponse
+
+    @GET("stories")
+    suspend fun getStories(): StoryResponse
+
+    @GET("stories/{id}")
+    suspend fun getStoryDetail(@Path("id") id: String): StoryDetailResponse
 }

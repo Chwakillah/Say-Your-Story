@@ -12,27 +12,26 @@ import kotlinx.coroutines.launch
 class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
 
     private val _registerResponse = MutableLiveData<RegisterResponse>()
-    val registerResponse: LiveData<RegisterResponse> get() = _registerResponse
+    val registerResponse: LiveData<RegisterResponse> = _registerResponse
 
     private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    val isLoading: LiveData<Boolean> = _isLoading
 
     fun register(name: String, email: String, password: String) {
         viewModelScope.launch {
-            _isLoading.postValue(true)
-
+            _isLoading.value = true
             try {
                 val response = repository.register(name, email, password)
-                _registerResponse.postValue(response)
+                _registerResponse.value = response
             } catch (e: Exception) {
                 Log.e("RegisterViewModel", "Error: ${e.message}")
-                _registerResponse.postValue(RegisterResponse(error = true))
+                _registerResponse.value = RegisterResponse(
+                    error = true,
+                    message = e.message ?: "Terjadi kesalahan saat mendaftar"
+                )
             } finally {
-                _isLoading.postValue(false)
+                _isLoading.value = false
             }
         }
     }
 }
-
-
-

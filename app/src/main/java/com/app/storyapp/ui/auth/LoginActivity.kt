@@ -11,19 +11,22 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.app.storyapp.databinding.ActivityLoginBinding
 import com.app.storyapp.nonui.repository.AuthRepository
 import com.app.storyapp.nonui.retrofit.ApiConfig
-import com.app.storyapp.nonui.utils.SessionManager
+import com.app.storyapp.nonui.utils.UserPreferences
+import com.app.storyapp.nonui.utils.dataStore
 import com.app.storyapp.nonui.viewmodel.LoginViewModel
 import com.app.storyapp.nonui.viewmodel.RegisterViewModel
 import com.app.storyapp.ui.HomeActivity
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var userPreferences: UserPreferences
 
-    // Membuat instance LoginViewModel menggunakan ViewModel
     private val loginViewModel: LoginViewModel by lazy {
         LoginViewModel(AuthRepository(ApiConfig.api))
     }
@@ -32,6 +35,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        userPreferences = UserPreferences.getInstance(dataStore)
 
         loginViewModel.isLoading.observe(this, Observer { isLoading ->
             showLoading(isLoading)
@@ -72,27 +77,22 @@ class LoginActivity : AppCompatActivity() {
         })
 
         // Observasi hasil login dari ViewModel
-        // Tambahkan ini di bagian login sukses di LoginActivity
-        loginViewModel.loginResponse.observe(this, Observer { response ->
+        loginViewModel.loginResponse.observe(this) { response ->
             if (response.error == true) {
-                Toast.makeText(this, response.message ?: "Ada yang salah. Coba lagi", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, response.message ?: "Ada yang salah. Coba lagi", Toast.LENGTH_SHORT)
+                    .show()
             } else {
-                // Simpan token dan status login
-                val sessionManager = SessionManager(this)
                 response.loginResult?.token?.let { token ->
-                    sessionManager.saveSession(token)
-                    Log.d("LoginActivity", "Token saved: $token")
+                    lifecycleScope.launch {
+                        userPreferences.saveLoginSession(token)
+                        Toast.makeText(this@LoginActivity, "Halo lagi!", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
                 }
-
-                Toast.makeText(this, "Halo lagi!", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, HomeActivity::class.java)
-                startActivity(intent)
-                finish()
             }
-        })
-
-
-
+        }
 
         // Menangani klik tombol login
         binding.btnMasuk.setOnClickListener {
@@ -106,7 +106,6 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // Menangani klik untuk pindah ke RegisterActivity
         binding.btnDaftar.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)

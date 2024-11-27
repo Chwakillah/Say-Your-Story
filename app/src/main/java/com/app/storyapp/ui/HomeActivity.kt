@@ -1,21 +1,69 @@
 package com.app.storyapp.ui
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.view.View
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.app.storyapp.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.storyapp.databinding.ActivityHomeBinding
+import com.app.storyapp.nonui.di.Injection
+import com.app.storyapp.nonui.viewmodel.StoryViewModel
+import com.app.storyapp.nonui.viewmodel.ViewModelFactory
+import com.app.storyapp.ui.adapter.StoryAdapter
 
 class HomeActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityHomeBinding
+    private val storyAdapter = StoryAdapter()
+
+    private val viewModel: StoryViewModel by viewModels {
+        ViewModelFactory(Injection.provideRepository(this))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_home)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setupRecyclerView()
+        setupSwipeRefresh()
+        observeViewModel()
+
+        viewModel.getStories()
+    }
+
+    private fun setupRecyclerView() {
+        binding.rvStories.apply {
+            layoutManager = LinearLayoutManager(this@HomeActivity)
+            adapter = storyAdapter
+            setHasFixedSize(true)
         }
+    }
+
+    private fun setupSwipeRefresh() {
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.getStories()
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.stories.observe(this) { stories ->
+            storyAdapter.submitList(stories)
+        }
+
+        viewModel.isLoading.observe(this) { isLoading ->
+            showLoading(isLoading)
+        }
+
+        viewModel.error.observe(this) { error ->
+            error?.let {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.swipeRefresh.isRefreshing = isLoading
     }
 }

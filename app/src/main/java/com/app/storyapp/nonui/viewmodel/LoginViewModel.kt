@@ -10,23 +10,23 @@ import com.app.storyapp.nonui.data.RegisterResponse
 import com.app.storyapp.nonui.repository.AuthRepository
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val repository: AuthRepository) : ViewModel() {
-
+class LoginViewModel(private val authRepository: AuthRepository) : ViewModel() {
     private val _loginResponse = MutableLiveData<LoginResponse>()
-    val loginResponse: LiveData<LoginResponse> get() = _loginResponse
+    val loginResponse: LiveData<LoginResponse> = _loginResponse
+
     private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> get() = _isLoading
+    val isLoading: LiveData<Boolean> = _isLoading
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            _isLoading.postValue(true)
-
             try {
-                val response = repository.login(email, password)
-                _loginResponse.postValue(response)
+                _isLoading.value = true
+                val response = authRepository.login(email, password)
+                _loginResponse.value = response
             } catch (e: Exception) {
-                Log.e("LoginViewModel", "Error during login: ${e.message}")
-                _loginResponse.postValue(LoginResponse(error = true, message = "Login failed"))
+                _loginResponse.value = LoginResponse(error = true, message = e.message)
+            } finally {
+                _isLoading.value = false
             }
         }
     }
