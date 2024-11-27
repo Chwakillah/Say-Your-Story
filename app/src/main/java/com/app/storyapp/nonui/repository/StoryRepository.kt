@@ -1,9 +1,9 @@
 package com.app.storyapp.nonui.repository
 
+import com.app.storyapp.nonui.data.StoryDetailResponse
 import com.app.storyapp.nonui.data.StoryResponse
 import com.app.storyapp.nonui.retrofit.ApiService
 import com.app.storyapp.nonui.utils.UserPreferences
-import kotlinx.coroutines.flow.first
 
 class StoryRepository private constructor(
     private val apiService: ApiService,
@@ -11,6 +11,10 @@ class StoryRepository private constructor(
 ) {
     suspend fun getStories(): StoryResponse {
         return apiService.getStories()
+    }
+
+    suspend fun getStoryDetail(id: String): StoryDetailResponse {
+        return apiService.getStoryDetail(id)
     }
 
     companion object {

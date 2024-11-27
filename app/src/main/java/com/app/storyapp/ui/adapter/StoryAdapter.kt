@@ -1,6 +1,7 @@
 package com.app.storyapp.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -11,18 +12,23 @@ import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class StoryAdapter : ListAdapter<ListStoryItem, StoryAdapter.StoryViewHolder>(DIFF_CALLBACK) {
+class StoryAdapter(private val onItemClick: (ListStoryItem, View) -> Unit) :
+    ListAdapter<ListStoryItem, StoryAdapter.StoryViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
         val binding = ItemStoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return StoryViewHolder(binding)
+        return StoryViewHolder(binding, onItemClick)
     }
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class StoryViewHolder(private val binding: ItemStoryBinding) : RecyclerView.ViewHolder(binding.root) {
+    class StoryViewHolder(
+        private val binding: ItemStoryBinding,
+        private val onItemClick: (ListStoryItem, View) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(story: ListStoryItem) {
             with(binding) {
                 tvName.text = story.name
@@ -34,9 +40,7 @@ class StoryAdapter : ListAdapter<ListStoryItem, StoryAdapter.StoryViewHolder>(DI
                     val outputFormat = SimpleDateFormat("dd MMM yyyy", Locale.US)
                     try {
                         val date = inputFormat.parse(createdAt)
-                        date?.let {
-                            tvDate.text = outputFormat.format(it)
-                        }
+                        date?.let { tvDate.text = outputFormat.format(it) }
                     } catch (e: Exception) {
                         tvDate.text = createdAt
                     }
@@ -47,6 +51,9 @@ class StoryAdapter : ListAdapter<ListStoryItem, StoryAdapter.StoryViewHolder>(DI
                     .load(story.photoUrl)
                     .centerCrop()
                     .into(ivStory)
+
+                // Handle click
+                itemView.setOnClickListener { onItemClick(story, itemView) }
             }
         }
     }
