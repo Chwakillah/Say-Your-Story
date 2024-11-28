@@ -14,7 +14,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/ivStory"
+            android:id="@+id/iv_item_photo"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:contentDescription="Story image"
@@ -23,7 +23,7 @@
             tools:src="@tools:sample/backgrounds/scenic" />
 
         <TextView
-            android:id="@+id/tvName"
+            android:id="@+id/tv_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -31,7 +31,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivStory"
+            app:layout_constraintTop_toBottomOf="@id/iv_item_photo"
             tools:text="John Doe" />
 
         <TextView
@@ -44,7 +44,7 @@
             android:ellipsize="end"
             android:maxLines="3"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvName"
+            app:layout_constraintTop_toBottomOf="@id/tv_item_name"
             tools:text="Lorem ipsum dolor sit amet" />
 
         <TextView
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:textSize="12sp"
-            app:layout_constraintBaseline_toBaselineOf="@id/tvName"
+            app:layout_constraintBaseline_toBaselineOf="@id/tv_item_name"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="2024-01-01" />
 

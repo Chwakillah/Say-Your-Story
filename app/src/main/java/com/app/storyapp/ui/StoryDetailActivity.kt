@@ -27,8 +27,8 @@ class StoryDetailActivity : AppCompatActivity() {
         binding = ActivityStoryDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+
 
         // Get story from intent
         val story = intent.getParcelableExtra<ListStoryItem>(EXTRA_STORY)?.let {

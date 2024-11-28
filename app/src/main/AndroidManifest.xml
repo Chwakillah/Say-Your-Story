@@ -38,5 +38,8 @@
 
         <activity android:name=".ui.StoryDetailActivity" />
 
+        <activity android:name=".ui.AddStoryActivity" />
+
+
     </application>
 </manifest>

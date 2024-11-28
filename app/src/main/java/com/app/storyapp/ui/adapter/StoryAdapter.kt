@@ -31,7 +31,7 @@ class StoryAdapter(private val onItemClick: (ListStoryItem, View) -> Unit) :
 
         fun bind(story: ListStoryItem) {
             with(binding) {
-                tvName.text = story.name
+                tvItemName.text = story.name
                 tvDescription.text = story.description
 
                 // Format date
@@ -50,7 +50,7 @@ class StoryAdapter(private val onItemClick: (ListStoryItem, View) -> Unit) :
                 Glide.with(itemView.context)
                     .load(story.photoUrl)
                     .centerCrop()
-                    .into(ivStory)
+                    .into(ivItemPhoto)
 
                 // Handle click
                 itemView.setOnClickListener { onItemClick(story, itemView) }
