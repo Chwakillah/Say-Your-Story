@@ -90,20 +90,13 @@ class LoginActivity : AppCompatActivity() {
                 response.loginResult?.let { loginResult ->
                     lifecycleScope.launch {
                         val token = loginResult.token ?: ""
-                        Log.d("LoginActivity", "Received token: '$token'")
-
                         if (token.isNotEmpty()) {
                             userPreferences.saveLoginSession(token)
-                            Log.d("LoginActivity", "Token saved successfully")
                         } else {
-                            Log.e("LoginActivity", "Received empty token")
                             Toast.makeText(this@LoginActivity, "Login failed: Empty token", Toast.LENGTH_SHORT).show()
                         }
-
-                        // Simpan nama
                         loginResult.name?.let {
                             userPreferences.saveName(it)
-                            Log.d("LoginActivity", "Name saved: $it")
                         }
 
                         Toast.makeText(this@LoginActivity, "Halo ${loginResult.name}!", Toast.LENGTH_SHORT).show()
@@ -115,8 +108,6 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-
-        // Menangani klik tombol login
         binding.btnMasuk.setOnClickListener {
             val email = binding.edLoginEmail.text.toString()
             val password = binding.edLoginPassword.text.toString()
@@ -134,7 +125,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
     private fun showLoading(isLoading: Boolean) {
-        Log.d("RegisterActivity", "isLoading: $isLoading")
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }

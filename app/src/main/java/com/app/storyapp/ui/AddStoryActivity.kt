@@ -40,37 +40,30 @@ class AddStoryActivity : AppCompatActivity() {
         binding = ActivityAddStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Setup ViewModel
         val userPreferences = UserPreferences.getInstance(dataStore)
         val token = runBlocking { userPreferences.getToken().first() }
         val apiService = ApiConfig.getApiService(token)
         val repository = StoryRepository.getInstance(apiService, userPreferences)
         viewModel = ViewModelFactory(repository).create(AddStoryViewModel::class.java)
 
-        // Setup UI listeners
         binding.btnGalleryPhoto.setOnClickListener { startGallery() }
         binding.btnCameraPhoto.setOnClickListener { startCamera() }
         binding.buttonAdd.setOnClickListener { uploadStory() }
 
-        // Observe upload result
         viewModel.uploadResult.observe(this) { result ->
             result.onSuccess {
-                // Hide progress bar
                 binding.progressBar.visibility = View.GONE
                 binding.buttonAdd.isEnabled = true
 
                 Toast.makeText(this, "Story uploaded successfully", Toast.LENGTH_SHORT).show()
                 navigateToMainActivity()
             }.onFailure {
-                // Hide progress bar
                 binding.progressBar.visibility = View.GONE
                 binding.buttonAdd.isEnabled = true
 
                 Toast.makeText(this, "Upload failed: ${it.message}", Toast.LENGTH_SHORT).show()
             }
         }
-
-        // Observe loading state
         viewModel.isLoading.observe(this) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
             binding.buttonAdd.isEnabled = !isLoading
@@ -109,13 +102,11 @@ class AddStoryActivity : AppCompatActivity() {
 
     private fun showImage() {
         currentImageUri?.let {
-            Log.d("Image URI", "showImage: $it")
             binding.ivStoryPhoto.setImageURI(it)
         }
     }
 
     private fun uploadStory() {
-        // Validate image and description
         if (currentImageUri == null) {
             Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show()
             return
@@ -129,7 +120,6 @@ class AddStoryActivity : AppCompatActivity() {
 
         val file = currentImageUri?.let { uriToFile(it, this) }
         file?.let {
-            // Compress the image
             val compressedFile = compressImage(it)
 
             val requestDescription = description.toRequestBody("text/plain".toMediaType())
@@ -139,17 +129,14 @@ class AddStoryActivity : AppCompatActivity() {
                 compressedFile.name,
                 requestImageFile
             )
-
-            // Upload story with compressed image
             viewModel.uploadStory(requestDescription, multipartBody)
         }
     }
 
-    // Add this method to compress the image
+
     private fun compressImage(file: File): File {
         val bitmap = BitmapFactory.decodeFile(file.path)
         val outputFile = createCustomTempFile(this)
-
         val outputStream = FileOutputStream(outputFile)
         bitmap.compress(Bitmap.CompressFormat.JPEG, 60, outputStream)
         outputStream.close()
@@ -164,7 +151,6 @@ class AddStoryActivity : AppCompatActivity() {
         finish()
     }
 
-    // Utility method to convert Uri to File
     private fun uriToFile(uri: Uri, context: Context): File {
         val contentResolver = context.contentResolver
         val myFile = createCustomTempFile(context)
@@ -177,14 +163,11 @@ class AddStoryActivity : AppCompatActivity() {
         while (inputStream?.read(buffer).also { length = it ?: -1 }!! > 0) {
             outputStream.write(buffer, 0, length)
         }
-
         outputStream.close()
         inputStream?.close()
-
         return myFile
     }
 
-    // Utility method to create a temporary file
     private fun createCustomTempFile(context: Context): File {
         val storageDir: File? = context.getExternalFilesDir(null)
         return File.createTempFile("story_image", ".jpg", storageDir)

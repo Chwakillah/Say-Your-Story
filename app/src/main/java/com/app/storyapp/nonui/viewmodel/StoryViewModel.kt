@@ -28,15 +28,9 @@ class StoryViewModel(private val repository: StoryRepository) : ViewModel() {
             _isLoading.value = true
             try {
                 val response = repository.getStories()
-
-                // Log untuk debugging
-                Log.d("StoryViewModel", "Stories response: ${response.listStory?.size}")
-
                 _stories.value = response.listStory ?: emptyList()
                 _error.value = null
             } catch (e: Exception) {
-                // Log error detail
-                Log.e("StoryViewModel", "Error fetching stories", e)
                 _error.value = when (e) {
                     is retrofit2.HttpException -> {
                         val errorBody = e.response()?.errorBody()?.string()

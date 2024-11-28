@@ -27,7 +27,6 @@ class HomeActivity : AppCompatActivity() {
             putExtra(StoryDetailActivity.EXTRA_STORY, story)
         }
 
-        // Periksa apakah elemen-elemen yang dibutuhkan ada
         val ivStory = itemView.findViewById<View?>(R.id.ivStory)
         val tvName = itemView.findViewById<View?>(R.id.tvName)
         val tvDescription = itemView.findViewById<View?>(R.id.tvDescription)
@@ -102,7 +101,7 @@ class HomeActivity : AppCompatActivity() {
     private fun logout() {
         lifecycleScope.launch {
             val userPreferences = UserPreferences.getInstance(dataStore)
-            userPreferences.clearLoginSession() // Ini akan menghapus token dan nama
+            userPreferences.clearLoginSession()
 
             Toast.makeText(this@HomeActivity, "Logout berhasil", Toast.LENGTH_SHORT).show()
 

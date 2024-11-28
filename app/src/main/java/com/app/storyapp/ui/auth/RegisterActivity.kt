@@ -38,7 +38,6 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun setupValidation() {
-        // Name validation
         binding.edRegisterNama.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -49,7 +48,6 @@ class RegisterActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // Email validation
         binding.edRegisterEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -62,7 +60,6 @@ class RegisterActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // Password validation
         binding.edRegisterPassword.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -89,7 +86,6 @@ class RegisterActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                // Simpan nama pengguna
                 lifecycleScope.launch {
                     userPreferences.saveName(binding.edRegisterNama.text.toString())
                 }
@@ -99,8 +95,6 @@ class RegisterActivity : AppCompatActivity() {
                     "Registrasi berhasil! Silakan login",
                     Toast.LENGTH_SHORT
                 ).show()
-
-                // Navigate to Login
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()

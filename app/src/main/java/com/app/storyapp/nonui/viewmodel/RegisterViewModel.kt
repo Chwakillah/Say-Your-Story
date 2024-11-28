@@ -24,7 +24,6 @@ class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
                 val response = repository.register(name, email, password)
                 _registerResponse.value = response
             } catch (e: Exception) {
-                Log.e("RegisterViewModel", "Error: ${e.message}")
                 _registerResponse.value = RegisterResponse(
                     error = true,
                     message = e.message ?: "Terjadi kesalahan saat mendaftar"

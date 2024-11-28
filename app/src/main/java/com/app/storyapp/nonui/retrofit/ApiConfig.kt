@@ -9,7 +9,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 object ApiConfig {
     private const val BASE_URL = "https://story-api.dicoding.dev/v1/"
 
-    // For non-authenticated endpoints (login, register)
     val api: ApiService by lazy {
         val client = OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
@@ -23,7 +22,6 @@ object ApiConfig {
             .create(ApiService::class.java)
     }
 
-    // For authenticated endpoints (stories)
     fun getApiService(token: String): ApiService {
         val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 

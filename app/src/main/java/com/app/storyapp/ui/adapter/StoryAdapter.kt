@@ -34,7 +34,6 @@ class StoryAdapter(private val onItemClick: (ListStoryItem, View) -> Unit) :
                 tvName.text = story.name
                 tvDescription.text = story.description
 
-                // Format date
                 story.createdAt?.let { createdAt ->
                     val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
                     val outputFormat = SimpleDateFormat("dd MMM yyyy", Locale.US)
@@ -46,13 +45,11 @@ class StoryAdapter(private val onItemClick: (ListStoryItem, View) -> Unit) :
                     }
                 }
 
-                // Load image using Glide
                 Glide.with(itemView.context)
                     .load(story.photoUrl)
                     .centerCrop()
                     .into(ivStory)
 
-                // Handle click
                 itemView.setOnClickListener { onItemClick(story, itemView) }
             }
         }

@@ -23,16 +23,13 @@ class UserPreferences private constructor(private val dataStore: DataStore<Prefe
     fun getToken(): Flow<String> {
         return dataStore.data.map { preferences ->
             val token = preferences[TOKEN_KEY] ?: ""
-            Log.d("UserPreferences", "Retrieved token: '$token', Is empty: ${token.isEmpty()}")
             token
         }
     }
 
     suspend fun saveLoginSession(token: String) {
-        Log.d("UserPreferences", "Attempting to save token: '$token'")
         dataStore.edit { preferences ->
             preferences[TOKEN_KEY] = token
-            Log.d("UserPreferences", "Token saved successfully")
         }
     }
 

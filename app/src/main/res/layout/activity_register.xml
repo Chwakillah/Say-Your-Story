@@ -15,7 +15,6 @@
         android:gravity="center"
         android:padding="20dp">
 
-        <!-- Email Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ed_register_nama_layout"
             android:layout_width="match_parent"
@@ -34,7 +33,6 @@
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Email Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ed_register_email_layout"
             android:layout_width="match_parent"
@@ -53,7 +51,6 @@
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Password Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ed_register_password_layout"
             android:layout_width="match_parent"
@@ -73,7 +70,6 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Button Masuk -->
         <Button
             android:id="@+id/btn_daftar"
             android:layout_width="match_parent"
@@ -83,7 +79,6 @@
             android:textColor="@color/white"
             android:text="Daftar" />
 
-        <!-- Button masuk -->
         <TextView
             android:id="@+id/btn_masuk"
             android:layout_width="wrap_content"
