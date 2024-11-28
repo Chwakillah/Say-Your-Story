@@ -20,6 +20,7 @@ import com.app.storyapp.nonui.utils.dataStore
 import com.app.storyapp.nonui.viewmodel.LoginViewModel
 import com.app.storyapp.nonui.viewmodel.RegisterViewModel
 import com.app.storyapp.ui.HomeActivity
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
@@ -28,7 +29,10 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var userPreferences: UserPreferences
 
     private val loginViewModel: LoginViewModel by lazy {
-        LoginViewModel(AuthRepository(ApiConfig.api))
+        LoginViewModel(
+            AuthRepository(ApiConfig.api),
+            UserPreferences.getInstance(dataStore)
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +51,6 @@ class LoginActivity : AppCompatActivity() {
         val emailEditText = binding.edLoginEmail
         val emailLayout = binding.edLoginEmailLayout
 
-        // Validasi input email dan password
         passwordEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -76,16 +79,34 @@ class LoginActivity : AppCompatActivity() {
             override fun afterTextChanged(editable: Editable?) {}
         })
 
-        // Observasi hasil login dari ViewModel
+        lifecycleScope.launch {
+            userPreferences.getName().collect { name ->
+                Log.d("LoginActivity", "Current saved name: $name")
+            }
+        }
+
         loginViewModel.loginResponse.observe(this) { response ->
-            if (response.error == true) {
-                Toast.makeText(this, response.message ?: "Ada yang salah. Coba lagi", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                response.loginResult?.token?.let { token ->
+            if (response.error == false) {
+                response.loginResult?.let { loginResult ->
                     lifecycleScope.launch {
-                        userPreferences.saveLoginSession(token)
-                        Toast.makeText(this@LoginActivity, "Halo lagi!", Toast.LENGTH_SHORT).show()
+                        val token = loginResult.token ?: ""
+                        Log.d("LoginActivity", "Received token: '$token'")
+
+                        if (token.isNotEmpty()) {
+                            userPreferences.saveLoginSession(token)
+                            Log.d("LoginActivity", "Token saved successfully")
+                        } else {
+                            Log.e("LoginActivity", "Received empty token")
+                            Toast.makeText(this@LoginActivity, "Login failed: Empty token", Toast.LENGTH_SHORT).show()
+                        }
+
+                        // Simpan nama
+                        loginResult.name?.let {
+                            userPreferences.saveName(it)
+                            Log.d("LoginActivity", "Name saved: $it")
+                        }
+
+                        Toast.makeText(this@LoginActivity, "Halo ${loginResult.name}!", Toast.LENGTH_SHORT).show()
                         val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                         startActivity(intent)
                         finish()
@@ -93,6 +114,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+
 
         // Menangani klik tombol login
         binding.btnMasuk.setOnClickListener {

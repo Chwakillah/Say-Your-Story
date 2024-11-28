@@ -20,6 +20,7 @@
             android:contentDescription="Story image"
             android:scaleType="centerCrop"
             app:layout_constraintTop_toTopOf="parent"
+            android:transitionName="story_image"
             tools:src="@tools:sample/backgrounds/scenic" />
 
         <TextView
@@ -32,7 +33,8 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivStory"
-            tools:text="John Doe" />
+            tools:text="John Doe"
+            android:transitionName="story_name"/>
 
         <TextView
             android:id="@+id/tvDescription"
@@ -45,7 +47,8 @@
             android:maxLines="3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvName"
-            tools:text="Lorem ipsum dolor sit amet" />
+            tools:text="Lorem ipsum dolor sit amet"
+            android:transitionName="story_description"/>
 
         <TextView
             android:id="@+id/tvDate"
@@ -55,7 +58,8 @@
             android:textSize="12sp"
             app:layout_constraintBaseline_toBaselineOf="@id/tvName"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="2024-01-01" />
+            tools:text="2024-01-01"
+            android:transitionName="story_date"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

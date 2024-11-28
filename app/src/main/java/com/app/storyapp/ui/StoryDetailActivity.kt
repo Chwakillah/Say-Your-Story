@@ -1,6 +1,7 @@
 package com.app.storyapp.ui
 
 import android.os.Bundle
+import android.transition.Slide
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
@@ -26,6 +27,14 @@ class StoryDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityStoryDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        window.allowEnterTransitionOverlap = true
+        window.allowReturnTransitionOverlap = true
+
+        val slideTransition = Slide()
+        slideTransition.duration = 300
+        window.enterTransition = slideTransition
+        window.returnTransition = slideTransition
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

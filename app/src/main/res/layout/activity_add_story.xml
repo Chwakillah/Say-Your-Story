@@ -61,8 +61,18 @@
             android:layout_height="wrap_content"
             android:hint="Tambahkan Deskripsi"
             android:minHeight="100dp"
-            android:inputType="textEmailAddress" />
+            android:inputType="textMultiLine" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/ed_layout_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/button_add"

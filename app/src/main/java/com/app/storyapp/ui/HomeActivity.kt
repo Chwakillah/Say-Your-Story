@@ -23,19 +23,25 @@ import kotlinx.coroutines.launch
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
     private val storyAdapter = StoryAdapter { story, itemView ->
-        // Example using Parcelable approach
-
         val intent = Intent(this, StoryDetailActivity::class.java).apply {
             putExtra(StoryDetailActivity.EXTRA_STORY, story)
         }
 
-        // Set up shared element transition
-        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-            this,
-            androidx.core.util.Pair(itemView.findViewById(R.id.ivStory), "story_image"),
-            androidx.core.util.Pair(itemView.findViewById(R.id.tvName), "story_name"),
-            androidx.core.util.Pair(itemView.findViewById(R.id.tvDescription), "story_description")
-        )
+        // Periksa apakah elemen-elemen yang dibutuhkan ada
+        val ivStory = itemView.findViewById<View?>(R.id.ivStory)
+        val tvName = itemView.findViewById<View?>(R.id.tvName)
+        val tvDescription = itemView.findViewById<View?>(R.id.tvDescription)
+
+        val options = if (ivStory != null && tvName != null && tvDescription != null) {
+            ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                androidx.core.util.Pair(ivStory, "story_image"),
+                androidx.core.util.Pair(tvName, "story_name"),
+                androidx.core.util.Pair(tvDescription, "story_description")
+            )
+        } else {
+            ActivityOptionsCompat.makeBasic()
+        }
 
         startActivity(intent, options.toBundle())
     }
@@ -96,7 +102,8 @@ class HomeActivity : AppCompatActivity() {
     private fun logout() {
         lifecycleScope.launch {
             val userPreferences = UserPreferences.getInstance(dataStore)
-            userPreferences.clearLoginSession()
+            userPreferences.clearLoginSession() // Ini akan menghapus token dan nama
+
             Toast.makeText(this@HomeActivity, "Logout berhasil", Toast.LENGTH_SHORT).show()
 
             val intent = Intent(this@HomeActivity, LoginActivity::class.java)

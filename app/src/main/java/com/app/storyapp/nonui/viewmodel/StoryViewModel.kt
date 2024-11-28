@@ -1,5 +1,6 @@
 package com.app.storyapp.nonui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,10 +28,22 @@ class StoryViewModel(private val repository: StoryRepository) : ViewModel() {
             _isLoading.value = true
             try {
                 val response = repository.getStories()
-                _stories.value = response.listStory
+
+                // Log untuk debugging
+                Log.d("StoryViewModel", "Stories response: ${response.listStory?.size}")
+
+                _stories.value = response.listStory ?: emptyList()
                 _error.value = null
             } catch (e: Exception) {
-                _error.value = e.message ?: "Terjadi kesalahan"
+                // Log error detail
+                Log.e("StoryViewModel", "Error fetching stories", e)
+                _error.value = when (e) {
+                    is retrofit2.HttpException -> {
+                        val errorBody = e.response()?.errorBody()?.string()
+                        "HTTP Error: ${e.code()} - $errorBody"
+                    }
+                    else -> e.message ?: "Terjadi kesalahan"
+                }
             } finally {
                 _isLoading.value = false
             }

@@ -89,6 +89,11 @@ class RegisterActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
+                // Simpan nama pengguna
+                lifecycleScope.launch {
+                    userPreferences.saveName(binding.edRegisterNama.text.toString())
+                }
+
                 Toast.makeText(
                     this,
                     "Registrasi berhasil! Silakan login",

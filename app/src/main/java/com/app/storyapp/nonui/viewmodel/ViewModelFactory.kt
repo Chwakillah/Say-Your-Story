@@ -6,10 +6,16 @@ import com.app.storyapp.nonui.repository.StoryRepository
 
 class ViewModelFactory(private val repository: StoryRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(StoryViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return StoryViewModel(repository) as T
+        when {
+            modelClass.isAssignableFrom(StoryViewModel::class.java) -> {
+                @Suppress("UNCHECKED_CAST")
+                return StoryViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(AddStoryViewModel::class.java) -> {
+                @Suppress("UNCHECKED_CAST")
+                return AddStoryViewModel(repository) as T
+            }
+            else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
