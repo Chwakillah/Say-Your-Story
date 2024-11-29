@@ -32,48 +32,12 @@ class RegisterActivity : AppCompatActivity() {
 
         userPreferences = UserPreferences.getInstance(dataStore)
 
-        setupValidation()
-        setupObservers()
-        setupButtons()
-    }
+        val emailEditText = binding.edRegisterEmail
+        val passwordEditText = binding.edRegisterPassword
 
-    private fun setupValidation() {
-        binding.edRegisterNama.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.edRegisterNamaLayout.error = if (s.isNullOrEmpty()) {
-                    "Nama tidak boleh kosong"
-                } else null
-            }
-            override fun afterTextChanged(s: Editable?) {}
-        })
+        emailEditText.setInputLayout(binding.edRegisterEmailLayout)
+        passwordEditText.setInputLayout(binding.edRegisterPasswordLayout)
 
-        binding.edRegisterEmail.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.edRegisterEmailLayout.error = when {
-                    s.isNullOrEmpty() -> "Email tidak boleh kosong"
-                    !Patterns.EMAIL_ADDRESS.matcher(s).matches() -> "Email tidak valid"
-                    else -> null
-                }
-            }
-            override fun afterTextChanged(s: Editable?) {}
-        })
-
-        binding.edRegisterPassword.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.edRegisterPasswordLayout.error = when {
-                    s.isNullOrEmpty() -> "Password tidak boleh kosong"
-                    s.length < 8 -> "Password minimal 8 karakter"
-                    else -> null
-                }
-            }
-            override fun afterTextChanged(s: Editable?) {}
-        })
-    }
-
-    private fun setupObservers() {
         registerViewModel.isLoading.observe(this) { isLoading ->
             showLoading(isLoading)
         }
@@ -82,7 +46,7 @@ class RegisterActivity : AppCompatActivity() {
             if (response.error == true) {
                 Toast.makeText(
                     this,
-                    response.message ?: "Terjadi kesalahan saat mendaftar",
+                    response.message ?: "Terjadi kesalahan saat mendaftar;-;",
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
@@ -100,9 +64,7 @@ class RegisterActivity : AppCompatActivity() {
                 finish()
             }
         }
-    }
 
-    private fun setupButtons() {
         binding.btnDaftar.setOnClickListener {
             val name = binding.edRegisterNama.text.toString()
             val email = binding.edRegisterEmail.text.toString()

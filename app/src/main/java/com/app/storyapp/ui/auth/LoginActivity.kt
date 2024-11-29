@@ -47,37 +47,10 @@ class LoginActivity : AppCompatActivity() {
         })
 
         val passwordEditText = binding.edLoginPassword
-        val passwordLayout = binding.edLoginPasswordLayout
         val emailEditText = binding.edLoginEmail
-        val emailLayout = binding.edLoginEmailLayout
 
-        passwordEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null && s.length < 8) {
-                    passwordLayout.error = "Password tidak boleh kurang dari 8 karakter"
-                } else {
-                    passwordLayout.error = null
-                }
-            }
-
-            override fun afterTextChanged(editable: Editable?) {}
-        })
-
-        emailEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null && !Patterns.EMAIL_ADDRESS.matcher(s).matches()) {
-                    emailLayout.error = "Email tidak valid"
-                } else {
-                    emailLayout.error = null
-                }
-            }
-
-            override fun afterTextChanged(editable: Editable?) {}
-        })
+        emailEditText.setInputLayout(binding.edLoginEmailLayout)
+        passwordEditText.setInputLayout(binding.edLoginPasswordLayout)
 
         lifecycleScope.launch {
             userPreferences.getName().collect { name ->

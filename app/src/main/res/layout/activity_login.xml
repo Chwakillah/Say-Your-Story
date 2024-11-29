@@ -28,7 +28,7 @@
             app:hintTextColor="@color/blue"
             app:errorEnabled="true">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.app.storyapp.ui.components.MyEditText
                 android:id="@+id/ed_login_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,12 +47,12 @@
             app:hintTextColor="@color/blue"
             app:errorEnabled="true">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.app.storyapp.ui.components.MyEditText
                 android:id="@+id/ed_login_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
                 android:hint="Password"
+                android:minHeight="48dp"
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
