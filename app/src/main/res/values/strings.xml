@@ -13,4 +13,6 @@
     <string name="message_main_page">Selamat Belajar di Dicoding.</string>
     <string name="greeting">Halo %1$s,</string>
     <string name="logout">Keluar</string>
+    <string name="title_activity_story_map">StoryMapActivity</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

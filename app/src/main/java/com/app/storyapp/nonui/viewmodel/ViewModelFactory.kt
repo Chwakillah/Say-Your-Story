@@ -15,6 +15,10 @@ class ViewModelFactory(private val repository: StoryRepository) : ViewModelProvi
                 @Suppress("UNCHECKED_CAST")
                 return AddStoryViewModel(repository) as T
             }
+            modelClass.isAssignableFrom(MapsViewModel::class.java) -> {
+                @Suppress("UNCHECKED_CAST")
+                return MapsViewModel(repository) as T
+            }
             else -> throw IllegalArgumentException("Unknown ViewModel class")
         }
     }

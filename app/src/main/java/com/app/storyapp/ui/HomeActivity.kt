@@ -2,6 +2,8 @@ package com.app.storyapp.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -18,6 +20,7 @@ import com.app.storyapp.nonui.viewmodel.StoryViewModel
 import com.app.storyapp.nonui.viewmodel.ViewModelFactory
 import com.app.storyapp.ui.adapter.StoryAdapter
 import com.app.storyapp.ui.auth.LoginActivity
+import com.app.storyapp.ui.components.MapsActivity
 import kotlinx.coroutines.launch
 
 class HomeActivity : AppCompatActivity() {
@@ -49,10 +52,28 @@ class HomeActivity : AppCompatActivity() {
         ViewModelFactory(Injection.provideRepository(this))
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.home_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_maps -> {
+                val intent = Intent(this, MapsActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setSupportActionBar(binding.toolbar)
 
         setupRecyclerView()
         setupSwipeRefresh()
