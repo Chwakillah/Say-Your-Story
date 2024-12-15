@@ -23,17 +23,24 @@ import kotlinx.coroutines.launch
 class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
     private val storyAdapter = StoryAdapter { story, itemView ->
-
         val intent = Intent(this, StoryDetailActivity::class.java).apply {
             putExtra(StoryDetailActivity.EXTRA_STORY, story)
         }
 
-        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-            this,
-            androidx.core.util.Pair(itemView.findViewById(R.id.iv_item_photo), "story_image"),
-            androidx.core.util.Pair(itemView.findViewById(R.id.tv_item_name), "story_name"),
-            androidx.core.util.Pair(itemView.findViewById(R.id.tvDescription), "story_description")
-        )
+        val ivStory = itemView.findViewById<View?>(R.id.iv_story_photo)
+        val tvName = itemView.findViewById<View?>(R.id.tv_item_name)
+        val tvDescription = itemView.findViewById<View?>(R.id.tvDescription)
+
+        val options = if (ivStory != null && tvName != null && tvDescription != null) {
+            ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this,
+                androidx.core.util.Pair(ivStory, "story_image"),
+                androidx.core.util.Pair(tvName, "story_name"),
+                androidx.core.util.Pair(tvDescription, "story_description")
+            )
+        } else {
+            ActivityOptionsCompat.makeBasic()
+        }
 
         startActivity(intent, options.toBundle())
     }
@@ -59,7 +66,6 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this, AddStoryActivity::class.java)
             startActivity(intent)
         }
-
     }
 
     private fun setupRecyclerView() {
@@ -104,8 +110,6 @@ class HomeActivity : AppCompatActivity() {
             finish()
         }
     }
-
-
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.swipeRefresh.isRefreshing = isLoading

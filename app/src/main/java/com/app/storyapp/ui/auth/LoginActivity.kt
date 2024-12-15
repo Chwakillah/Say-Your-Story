@@ -20,6 +20,7 @@ import com.app.storyapp.nonui.utils.dataStore
 import com.app.storyapp.nonui.viewmodel.LoginViewModel
 import com.app.storyapp.nonui.viewmodel.RegisterViewModel
 import com.app.storyapp.ui.HomeActivity
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
@@ -28,7 +29,10 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var userPreferences: UserPreferences
 
     private val loginViewModel: LoginViewModel by lazy {
-        LoginViewModel(AuthRepository(ApiConfig.api))
+        LoginViewModel(
+            AuthRepository(ApiConfig.api),
+            UserPreferences.getInstance(dataStore)
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,49 +47,32 @@ class LoginActivity : AppCompatActivity() {
         })
 
         val passwordEditText = binding.edLoginPassword
-        val passwordLayout = binding.edLoginPasswordLayout
         val emailEditText = binding.edLoginEmail
-        val emailLayout = binding.edLoginEmailLayout
 
-        // Validasi input email dan password
-        passwordEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
+        emailEditText.setInputLayout(binding.edLoginEmailLayout)
+        passwordEditText.setInputLayout(binding.edLoginPasswordLayout)
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null && s.length < 8) {
-                    passwordLayout.error = "Password tidak boleh kurang dari 8 karakter"
-                } else {
-                    passwordLayout.error = null
-                }
+        lifecycleScope.launch {
+            userPreferences.getName().collect { name ->
+                Log.d("LoginActivity", "Current saved name: $name")
             }
+        }
 
-            override fun afterTextChanged(editable: Editable?) {}
-        })
-
-        emailEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null && !Patterns.EMAIL_ADDRESS.matcher(s).matches()) {
-                    emailLayout.error = "Email tidak valid"
-                } else {
-                    emailLayout.error = null
-                }
-            }
-
-            override fun afterTextChanged(editable: Editable?) {}
-        })
-
-        // Observasi hasil login dari ViewModel
         loginViewModel.loginResponse.observe(this) { response ->
-            if (response.error == true) {
-                Toast.makeText(this, response.message ?: "Ada yang salah. Coba lagi", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                response.loginResult?.token?.let { token ->
+            if (response.error == false) {
+                response.loginResult?.let { loginResult ->
                     lifecycleScope.launch {
-                        userPreferences.saveLoginSession(token)
-                        Toast.makeText(this@LoginActivity, "Halo lagi!", Toast.LENGTH_SHORT).show()
+                        val token = loginResult.token ?: ""
+                        if (token.isNotEmpty()) {
+                            userPreferences.saveLoginSession(token)
+                        } else {
+                            Toast.makeText(this@LoginActivity, "Login failed: Empty token", Toast.LENGTH_SHORT).show()
+                        }
+                        loginResult.name?.let {
+                            userPreferences.saveName(it)
+                        }
+
+                        Toast.makeText(this@LoginActivity, "Halo ${loginResult.name}!", Toast.LENGTH_SHORT).show()
                         val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                         startActivity(intent)
                         finish()
@@ -94,7 +81,6 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // Menangani klik tombol login
         binding.btnMasuk.setOnClickListener {
             val email = binding.edLoginEmail.text.toString()
             val password = binding.edLoginPassword.text.toString()
@@ -112,7 +98,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
     private fun showLoading(isLoading: Boolean) {
-        Log.d("RegisterActivity", "isLoading: $isLoading")
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }

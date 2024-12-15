@@ -1,6 +1,7 @@
 package com.app.storyapp.ui
 
 import android.os.Bundle
+import android.transition.Slide
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
@@ -28,7 +29,16 @@ class StoryDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        window.allowEnterTransitionOverlap = true
+        window.allowReturnTransitionOverlap = true
 
+        val slideTransition = Slide()
+        slideTransition.duration = 300
+        window.enterTransition = slideTransition
+        window.returnTransition = slideTransition
+
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Get story from intent
         val story = intent.getParcelableExtra<ListStoryItem>(EXTRA_STORY)?.let {
