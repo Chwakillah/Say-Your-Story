@@ -1,11 +1,14 @@
-package com.app.storyapp.ui.adapter
+package com.app.storyapp.nonui.repository
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.app.storyapp.nonui.data.ListStoryItem
 import com.app.storyapp.nonui.retrofit.ApiService
 
-class StoryPagingSource(private val apiService: ApiService) : PagingSource<Int, ListStoryItem>() {
+class StoryPagingSource(
+    private val apiService: ApiService,
+    private val token: String
+) : PagingSource<Int, ListStoryItem>() {
 
     private companion object {
         const val INITIAL_PAGE_INDEX = 1
@@ -15,8 +18,9 @@ class StoryPagingSource(private val apiService: ApiService) : PagingSource<Int, 
         return try {
             val position = params.key ?: INITIAL_PAGE_INDEX
             val responseData = apiService.getStories(position, params.loadSize)
+
             LoadResult.Page(
-                data = responseData.listStory, // Use the listStory property
+                data = responseData.listStory,
                 prevKey = if (position == INITIAL_PAGE_INDEX) null else position - 1,
                 nextKey = if (responseData.listStory.isEmpty()) null else position + 1
             )
@@ -31,5 +35,4 @@ class StoryPagingSource(private val apiService: ApiService) : PagingSource<Int, 
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
     }
-
 }

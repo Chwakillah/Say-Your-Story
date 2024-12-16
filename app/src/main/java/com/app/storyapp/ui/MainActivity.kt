@@ -27,8 +27,6 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             checkLoginState()
         }
-
-        viewModel.getStories()
     }
 
     private suspend fun checkLoginState() {

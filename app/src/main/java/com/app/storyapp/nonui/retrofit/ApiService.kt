@@ -35,9 +35,6 @@ interface ApiService {
         @Field("password") password: String
     ): LoginResponse
 
-//    @GET("stories")
-//    suspend fun getStories(): StoryResponse
-
     @GET("stories/{id}")
     suspend fun getStoryDetail(@Path("id") id: String): StoryDetailResponse
 

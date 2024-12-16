@@ -16,7 +16,8 @@ class MapsViewModel(private val repository: StoryRepository) : ViewModel() {
     fun getStoriesWithLocation() {
         viewModelScope.launch {
             try {
-                val response = repository.getStories()
+                // Gunakan getStoriesWithLocation() dari repository
+                val response = repository.getStoriesWithLocation()
                 val filteredStories = response.listStory.filter {
                     it.lat != null && it.lon != null // Filter stories with valid coordinates
                 }

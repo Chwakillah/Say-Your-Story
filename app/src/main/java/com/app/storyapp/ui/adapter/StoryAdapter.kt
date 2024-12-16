@@ -3,8 +3,8 @@ package com.app.storyapp.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.app.storyapp.databinding.ItemStoryBinding
 import com.app.storyapp.nonui.data.ListStoryItem
@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class StoryAdapter(private val onItemClick: (ListStoryItem, View) -> Unit) :
-    ListAdapter<ListStoryItem, StoryAdapter.StoryViewHolder>(DIFF_CALLBACK) {
+    PagingDataAdapter<ListStoryItem, StoryAdapter.StoryViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
         val binding = ItemStoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -21,7 +21,8 @@ class StoryAdapter(private val onItemClick: (ListStoryItem, View) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val story = getItem(position)
+        story?.let { holder.bind(it) }
     }
 
     class StoryViewHolder(

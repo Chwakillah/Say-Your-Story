@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"> </string>
+    <string name="app_name">Say Story</string>
     <string name="signup">Daftar</string>
     <string name="login">Masuk</string>
     <string name="message_welcome_page">Mau belajar Android, iOS, Machine Learning, Cloud, Front-End, Back-End, dan bidang IT lainnya? Di Dicoding aja!</string>
@@ -15,4 +15,5 @@
     <string name="logout">Keluar</string>
     <string name="title_activity_story_map">StoryMapActivity</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="retry">Coba lagi</string>
 </resources>

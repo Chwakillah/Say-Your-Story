@@ -1,19 +1,17 @@
 package com.app.storyapp.nonui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.app.storyapp.nonui.data.ListStoryItem
 import com.app.storyapp.nonui.data.Story
 import com.app.storyapp.nonui.repository.StoryRepository
 import kotlinx.coroutines.launch
 
 class StoryViewModel(private val repository: StoryRepository) : ViewModel() {
-    private val _stories = MutableLiveData<List<ListStoryItem>>()
-    val stories: LiveData<List<ListStoryItem>> = _stories
-
     private val _storyDetail = MutableLiveData<Story>()
     val storyDetail: LiveData<Story> = _storyDetail
 
@@ -23,26 +21,8 @@ class StoryViewModel(private val repository: StoryRepository) : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    fun getStories() {
-        viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                val response = repository.getStories()
-                _stories.value = response.listStory ?: emptyList()
-                _error.value = null
-            } catch (e: Exception) {
-                _error.value = when (e) {
-                    is retrofit2.HttpException -> {
-                        val errorBody = e.response()?.errorBody()?.string()
-                        "HTTP Error: ${e.code()} - $errorBody"
-                    }
-                    else -> e.message ?: "Terjadi kesalahan"
-                }
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
+    // Gunakan LiveData<PagingData<ListStoryItem>> untuk mendukung Paging
+    val stories: LiveData<PagingData<ListStoryItem>> = repository.getStories().cachedIn(viewModelScope)
 
     fun getStoryDetail(id: String) {
         viewModelScope.launch {
