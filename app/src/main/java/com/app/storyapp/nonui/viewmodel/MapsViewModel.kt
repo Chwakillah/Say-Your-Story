@@ -16,14 +16,12 @@ class MapsViewModel(private val repository: StoryRepository) : ViewModel() {
     fun getStoriesWithLocation() {
         viewModelScope.launch {
             try {
-                // Gunakan getStoriesWithLocation() dari repository
                 val response = repository.getStoriesWithLocation()
                 val filteredStories = response.listStory.filter {
-                    it.lat != null && it.lon != null // Filter stories with valid coordinates
+                    it.lat != null && it.lon != null
                 }
                 _storiesWithLocation.postValue(filteredStories)
             } catch (e: Exception) {
-                // Handle error (log or show a message to user)
                 _storiesWithLocation.postValue(emptyList())
             }
         }

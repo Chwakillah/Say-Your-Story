@@ -40,7 +40,6 @@ class StoryDetailActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // Get story from intent
         val story = intent.getParcelableExtra<ListStoryItem>(EXTRA_STORY)?.let {
             Story(
                 id = it.id,
@@ -56,10 +55,8 @@ class StoryDetailActivity : AppCompatActivity() {
         val storyId = intent.getStringExtra(EXTRA_STORY_ID)
 
         if (story != null) {
-            // If story object is passed, show it directly
             showStoryDetail(story)
         } else if (storyId != null) {
-            // If only ID is passed, fetch from API
             viewModel.getStoryDetail(storyId)
             observeViewModel()
         }
@@ -80,7 +77,6 @@ class StoryDetailActivity : AppCompatActivity() {
             tvDetailName.text = story.name
             tvDetailDescription.text = story.description
 
-            // Format date
             story.createdAt?.let { createdAt ->
                 val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
                 val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale.US)
@@ -94,7 +90,6 @@ class StoryDetailActivity : AppCompatActivity() {
                 }
             }
 
-            // Load image
             Glide.with(this@StoryDetailActivity)
                 .load(story.photoUrl)
                 .into(ivDetailPhoto)

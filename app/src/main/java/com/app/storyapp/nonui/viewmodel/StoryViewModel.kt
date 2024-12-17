@@ -21,7 +21,6 @@ class StoryViewModel(private val repository: StoryRepository) : ViewModel() {
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    // Gunakan LiveData<PagingData<ListStoryItem>> untuk mendukung Paging
     val stories: LiveData<PagingData<ListStoryItem>> = repository.getStories().cachedIn(viewModelScope)
 
     fun getStoryDetail(id: String) {
